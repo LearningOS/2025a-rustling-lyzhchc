@@ -14,7 +14,6 @@
 // Execute `rustlings hint hashmaps3` or use the `hint` watch subcommand for a
 // hint.
 
-// I AM NOT DONE
 
 use std::collections::HashMap;
 
@@ -30,6 +29,7 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
 
     for r in results.lines() {
         let v: Vec<&str> = r.split(',').collect();
+        println!("{:?}",v);
         let team_1_name = v[0].to_string();
         let team_1_score: u8 = v[2].parse().unwrap();
         let team_2_name = v[1].to_string();
@@ -39,6 +39,24 @@ fn build_scores_table(results: String) -> HashMap<String, Team> {
         // will be the number of goals conceded from team_2, and similarly
         // goals scored by team_2 will be the number of goals conceded by
         // team_1.
+
+        {
+            scores.entry(team_1_name.clone()).or_insert(Team{goals_scored: 0, goals_conceded:0 });
+            let _team1 = scores.get_mut(&team_1_name.clone()).unwrap();
+            _team1.goals_scored += team_1_score;
+            _team1.goals_conceded += team_2_score;
+        }
+
+        {
+            scores.entry(team_2_name.clone()).or_insert(Team{goals_scored: 0, goals_conceded:0 });
+            let _team2 = scores.get_mut(&team_2_name.clone()).unwrap();
+            _team2.goals_scored += team_2_score;
+            _team2.goals_conceded += team_1_score;
+        }
+
+        println!("{} {} {}",team_1_name,scores.get(&team_1_name.clone()).unwrap().goals_scored,scores.get(&team_1_name.clone()).unwrap().goals_conceded);
+        println!("{} {} {}",team_2_name,scores.get(&team_2_name.clone()).unwrap().goals_scored,scores.get(&team_2_name.clone()).unwrap().goals_conceded);
+
     }
     scores
 }
@@ -53,6 +71,7 @@ mod tests {
             + "France,Italy,3,1\n"
             + "Poland,Spain,2,0\n"
             + "Germany,England,2,1\n";
+        // println!("{}",results);
         results
     }
 

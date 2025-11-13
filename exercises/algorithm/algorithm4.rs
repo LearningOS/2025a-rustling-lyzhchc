@@ -3,7 +3,6 @@
 	This problem requires you to implement a basic interface for a binary tree
 */
 
-//I AM NOT DONE
 use std::cmp::Ordering;
 use std::fmt::Debug;
 
@@ -50,13 +49,42 @@ where
 
     // Insert a value into the BST
     fn insert(&mut self, value: T) {
-        //TODO
+        //TODO     root: Option<Box<TreeNode<T>>>,
+        //首先判断是否为None? 不需要
+        self.root = Self::insert_node(self.root.take(), value);
     }
+    fn insert_node(node: Option<Box<TreeNode<T>>>, value: T) -> Option<Box<TreeNode<T>>> {
+        match node {
+            None => Some(Box::new(TreeNode::new(value))),
+            Some(mut n) => {
+                if value < n.value {
+                    n.left = Self::insert_node(n.left.take(), value);
+                } else if value > n.value{
+                    n.right = Self::insert_node(n.right.take(), value);
+                }
+                Some(n)
+            }
+        }
+    }
+    
 
     // Search for a value in the BST
     fn search(&self, value: T) -> bool {
-        //TODO
-        true
+        Self::search_node(&self.root, value)
+    }
+    fn search_node(node: &Option<Box<TreeNode<T>>>,value: T) -> bool{
+        match node {
+            None => false,
+            Some(n) => {
+                if value < n.value {
+                    Self::search_node(&n.left, value)
+                } else if value > n.value {
+                    Self::search_node(&n.right, value)
+                } else {
+                    true
+                }
+            }
+        }
     }
 }
 
@@ -66,7 +94,17 @@ where
 {
     // Insert a node into the tree
     fn insert(&mut self, value: T) {
-        //TODO
+        if value < self.value {
+            match self.left {
+                None => self.left = Some(Box::new(TreeNode::new(value))),
+                Some(ref mut node) => node.insert(value),
+            }
+        } else if value < self.value{
+            match self.right {
+                None => self.right = Some(Box::new(TreeNode::new(value))),
+                Some(ref mut node) => node.insert(value),
+            }
+        }
     }
 }
 

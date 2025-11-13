@@ -2,7 +2,6 @@
 	queue
 	This question requires you to use queues to implement the functionality of the stac
 */
-// I AM NOT DONE
 
 #[derive(Debug)]
 pub struct Queue<T> {
@@ -51,7 +50,7 @@ impl<T> Default for Queue<T> {
         }
     }
 }
-
+#[derive(Debug)]
 pub struct myStack<T>
 {
 	//TODO
@@ -68,14 +67,38 @@ impl<T> myStack<T> {
     }
     pub fn push(&mut self, elem: T) {
         //TODO
+        if self.q1.is_empty() {
+            self.q2.enqueue(elem);
+        } else {
+            self.q1.enqueue(elem);
+        }
     }
     pub fn pop(&mut self) -> Result<T, &str> {
         //TODO
-		Err("Stack is empty")
+        if self.q1.is_empty() {
+            if self.q2.is_empty() {
+                return Err("Stack is empty");
+            }
+            // 将 q2 中的所有元素（除了最后一个）移到 q1
+            while self.q2.size() > 1 {
+                self.q1.enqueue(self.q2.dequeue().unwrap());
+            }
+            return self.q2.dequeue();
+        } else {
+            if self.q1.is_empty() {
+                return Err("Stack is empty");
+            }
+            // 将 q1 中的所有元素（除了最后一个）移到 q2
+            while self.q1.size() > 1 {
+                self.q2.enqueue(self.q1.dequeue().unwrap());
+            }
+            return self.q1.dequeue();
+        }
+		// Err("Stack is empty")
     }
     pub fn is_empty(&self) -> bool {
 		//TODO
-        true
+        self.q1.is_empty() && self.q2.is_empty()
     }
 }
 
@@ -86,6 +109,7 @@ mod tests {
 	#[test]
 	fn test_queue(){
 		let mut s = myStack::<i32>::new();
+        dbg!(&s);
 		assert_eq!(s.pop(), Err("Stack is empty"));
         s.push(1);
         s.push(2);

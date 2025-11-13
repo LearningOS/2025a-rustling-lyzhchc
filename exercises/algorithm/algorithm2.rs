@@ -2,7 +2,6 @@
 	double linked list reverse
 	This problem requires you to reverse a doubly linked list
 */
-// I AM NOT DONE
 
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
@@ -73,7 +72,63 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn reverse(&mut self){
-		// TODO
+		// TODO1 -> 2 -> 3 -> 4 -> None  ===> 4321None
+        		// TODO1 -> 2 -> 3 -> 4 -> None  ===> 4321None
+                let mut prev: Option<NonNull<Node<T>>> = None;
+                let orin_start = self.start;
+                let mut start_temp= self.start;
+                // let end_temp = self.end;
+                // println!("hahahah {:?}",(*end_temp.as_ptr()).val);
+                // start  -> next -> next 。。。-> end
+                while start_temp != None{
+                    //获取start next的值
+                    let next_node = unsafe { (*start_temp.unwrap().as_ptr()).next };
+                    unsafe { (*start_temp.unwrap().as_ptr()).next = prev; };
+                    prev = start_temp;
+                    start_temp = next_node;
+                }
+                self.end = orin_start;
+                self.start = prev; 
+
+        //初始状态1 -> 2 -> 3 -> 4 -> None
+        //  prev = None
+        // current = Some(node1)
+        // new_end = Some(node1)
+        //第一次循环
+        // next = Some(node2)
+        // 反转 node1 的指针：node1.next = prev (None)
+        // prev = Some(node1)
+        // current = Some(node2)
+        // None <- 1    2 -> 3 -> 4 -> None
+
+        //检查current 是否为Some
+        // let mut prev: Option<NonNull<Node<T>>> = None;
+        // let mut current = self.start;
+        // let mut new_end = self.start;
+        // while let Some(current_ptr) = current {
+        //     let next = unsafe { (*current_ptr.as_ptr()).next };
+        //     unsafe { (*current_ptr.as_ptr()).next = prev };
+        //     prev = Some(current_ptr);
+        //     current = next;
+        // }
+
+        // self.start = prev;
+        // self.end = new_end;
+
+
+        // let mut prev: Option<NonNull<Node<T>>> = None;
+        // let mut current = self.start;
+        // let original_start = self.start; // 保存原始的头节点，作为新的尾节点
+    
+        // while current != None {
+        //     let next_node = unsafe { (*current.unwrap().as_ptr()).next };
+        //     unsafe { (*current.unwrap().as_ptr()).next = prev; }
+        //     prev = current;
+        //     current = next_node;
+        // }
+    
+        // self.start = prev;
+        // self.end = original_start;
 	}
 }
 

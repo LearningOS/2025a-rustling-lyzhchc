@@ -3,10 +3,10 @@
 	This problem requires you to implement a basic BFS algorithm
 */
 
-//I AM NOT DONE
 use std::collections::VecDeque;
 
 // Define a graph
+#[derive(Debug)]
 struct Graph {
     adj: Vec<Vec<usize>>, 
 }
@@ -23,6 +23,7 @@ impl Graph {
     fn add_edge(&mut self, src: usize, dest: usize) {
         self.adj[src].push(dest); 
         self.adj[dest].push(src); 
+        // println!("hahaha {:?}",self.adj);
     }
 
     // Perform a breadth-first search on the graph, return the order of visited nodes
@@ -30,7 +31,25 @@ impl Graph {
         
 		//TODO
 
-        let mut visit_order = vec![];
+        let mut visit_order = Vec::new();
+        let mut visited = vec![false; self.adj.len()];
+        let mut queue = VecDeque::new();
+
+        // Start BFS from the given start node
+        queue.push_back(start);
+        visited[start] = true;
+
+        while let Some(current) = queue.pop_front() {
+            visit_order.push(current);
+
+            for &neighbor in &self.adj[current] {
+                if !visited[neighbor] {
+                    queue.push_back(neighbor);
+                    visited[neighbor] = true;
+                }
+            }
+        }
+
         visit_order
     }
 }
@@ -43,13 +62,25 @@ mod tests {
     #[test]
     fn test_bfs_all_nodes_visited() {
         let mut graph = Graph::new(5);
-        graph.add_edge(0, 1);
-        graph.add_edge(0, 4);
-        graph.add_edge(1, 2);
-        graph.add_edge(1, 3);
-        graph.add_edge(1, 4);
-        graph.add_edge(2, 3);
-        graph.add_edge(3, 4);
+        graph.add_edge(0, 1); //10xxx
+        println!("{:?}",graph);
+        graph.add_edge(0, 4);  //40x0x
+        println!("{:?}",graph);
+
+        graph.add_edge(1, 2);  //42xxx
+        println!("{:?}",graph);
+
+        graph.add_edge(1, 3);  //43xxx
+        println!("{:?}",graph);
+
+        graph.add_edge(1, 4);  //44xxx
+        println!("{:?}",graph);
+
+        graph.add_edge(2, 3);  //443xx
+        println!("{:?}",graph);
+
+        graph.add_edge(3, 4);  //
+        println!("{:?}",graph);
 
         let visited_order = graph.bfs_with_return(0);
         assert_eq!(visited_order, vec![0, 1, 4, 2, 3]);

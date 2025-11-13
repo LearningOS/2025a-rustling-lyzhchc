@@ -2,13 +2,11 @@
 	single linked list merge
 	This problem requires you to merge two ordered singly linked lists into one ordered singly linked list
 */
-// I AM NOT DONE
-
 use std::fmt::{self, Display, Formatter};
 use std::ptr::NonNull;
 use std::vec::*;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)] // 确保 Node<T> 的 T 可以被克隆
 struct Node<T> {
     val: T,
     next: Option<NonNull<Node<T>>>,
@@ -22,7 +20,7 @@ impl<T> Node<T> {
         }
     }
 }
-#[derive(Debug)]
+#[derive(Debug, Clone)] // 确保 Node<T> 的 T 可以被克隆
 struct LinkedList<T> {
     length: u32,
     start: Option<NonNull<Node<T>>>,
@@ -70,14 +68,40 @@ impl<T> LinkedList<T> {
         }
     }
 	pub fn merge(list_a:LinkedList<T>,list_b:LinkedList<T>) -> Self
-	{
-		//TODO
-		Self {
-            length: 0,
-            start: None,
-            end: None,
+    where
+        T: PartialOrd + Display + Clone, // 增加 Clone 约束
+    {
+        let mut new_list = LinkedList::new();
+        let mut a = list_a.start;
+        let mut b = list_b.start;
+
+        while a.is_some() && b.is_some() {
+            let a_val = unsafe { &(*a.unwrap().as_ptr()).val };
+            let b_val = unsafe { &(*b.unwrap().as_ptr()).val };
+
+            if a_val <= b_val {
+                new_list.add(a_val.clone()); // Assuming T can be cloned; adjust if necessary
+                a = unsafe { (*a.unwrap().as_ptr()).next };
+            } else {
+                new_list.add(b_val.clone()); // Assuming T can be cloned; adjust if necessary
+                b = unsafe { (*b.unwrap().as_ptr()).next };
+            }
         }
-	}
+
+        while a.is_some() {
+            let a_val = unsafe { &(*a.unwrap().as_ptr()).val };
+            new_list.add(a_val.clone()); // Assuming T can be cloned; adjust if necessary
+            a = unsafe { (*a.unwrap().as_ptr()).next };
+        }
+
+        while b.is_some() {
+            let b_val = unsafe { &(*b.unwrap().as_ptr()).val };
+            new_list.add(b_val.clone()); // Assuming T can be cloned; adjust if necessary
+            b = unsafe { (*b.unwrap().as_ptr()).next };
+        }
+
+        new_list
+    }
 }
 
 impl<T> Display for LinkedList<T>
